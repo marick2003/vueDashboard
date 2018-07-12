@@ -1,18 +1,36 @@
 <template>
-  <div class="hello">
-   <a href="#" @click.prevent="signout">登出</a>
- 
-  </div>
-</template>
+    <div>
+   
+    <navbar></navbar>
+    <div class="container-fluid">
+      <div class="row">
+          <Sidebar></Sidebar>
+          
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+            <router-view></router-view>
+        </main>
+      </div>
+    </div>
 
+    </div>
+</template>
 <script>
+import Sidebar from './Sidebar';
+import Navbar from './Navbar';
 export default {
-  name: 'HelloWorld',
+    
+  name: 'Dashboad',
   data () {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
+   
   },
+   components:{
+       Sidebar,
+       Navbar,
+        
+    },
   methods:{
     signout(){
        const api=`${process.env.APIPATH}/logout`;

@@ -17,3 +17,38 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+router.beforeEach((to,from,next)=>{
+
+  console.log("to: "+to+"from: "+ from+ "next: "+ next);
+  if(to.meta.requiresAuth){
+
+    console.log("need 驗證");
+    const api=`${process.env.APIPATH}/api/user/check`;
+    const vm= this;
+    ///這裡是router 底下
+    axios.post(api).then((response) =>{
+
+                     console.log(response.data);
+                     if(response.data.success){
+
+                        // vm.$router.push('/');
+                         next();
+                     }else{
+
+                       // vm.$router.push('/login');
+                        next({
+
+                          path: '/login'
+                        });
+                     }
+
+      });
+
+
+
+  }else{
+
+    next();
+  }
+  
+});
