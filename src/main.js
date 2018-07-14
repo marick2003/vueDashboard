@@ -32,7 +32,10 @@ router.beforeEach((to,from,next)=>{
                      if(response.data.success){
 
                         // vm.$router.push('/');
-                         next();
+                         next({
+                          path: '/admin'
+
+                         });
                      }else{
 
                        // vm.$router.push('/login');
