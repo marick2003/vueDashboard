@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="text-right mt-4">
-            <button class="btn btn-primary" @click="openModal" >建立新的產品</button>
+            <button class="btn btn-primary" @click="openModal(true)" >建立新的產品</button>
         </div> 
         <table class="table mt-4">
             <thead>
@@ -12,6 +12,7 @@
                     <th width="120">售價</th>
                     <th width="120">是否啟用</th>
                     <th width="80">編輯</th>
+                    <th width="80">刪除</th>
                 </tr>
             </thead>
             <tbody>
@@ -31,7 +32,12 @@
                         <span v-else>未啟用</span>
                     </td>
                     <td>
-                        <button class="btn btn-outline-primary btn-sm">編輯</button>
+                        <button class="btn btn-outline-primary btn-sm"
+                         @click="openModal(false,item)">編輯</button>
+                    </td>
+                    <td>
+                       <button class="btn btn-outline-primary btn-sm"
+                         @click="opendelModal(item)">刪除</button>
                     </td>
                 </tr>
             </tbody>
@@ -62,7 +68,12 @@
                 <i class="fas fa-spinner fa-spin"></i>
               </label>
               <input type="file" id="customFile" class="form-control"
-                ref="files">
+                ref="files" @change="uploadFile">
+            <!-- <form action="/api/thisismycourse2/admin/upload" enctype="multipart/form-data" 
+            method="post">
+              <input type="file" name="file-to-upload">
+              <input type="submit" value="Upload">
+            </form>  -->
             </div>
             <img img="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=828346ed697837ce808cae68d3ddc3cf&auto=format&fit=crop&w=1350&q=80"
               class="img-fluid" alt="" :src="tempProduct.imageUrl">
@@ -130,6 +141,32 @@
     </div>
   </div>
 </div>
+
+<!-- 刪除 -->
+<div class="modal fade" id="delProductModal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content border-0">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="exampleModalLabel">
+          <span>刪除產品</span>
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        是否刪除 <strong class="text-danger">{{ tempProduct.title }}</strong> 商品(刪除後將無法恢復)。
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-danger" @click="delProduct"
+          >確認刪除</button>
+      </div>
+    </div>
+  </div>
+</div>
+
     </div>    
 
 </template>
@@ -141,6 +178,7 @@ export default {
             return{
                 products:[],
                 tempProduct:{},
+                isNew: false,
 
             }
         },
@@ -159,22 +197,82 @@ export default {
 
                     });
             },
-            openModal(){
+            openModal(isNew,item){
 
+                
+                if(isNew){
+
+                  this.tempProduct={};
+                  this.isNew=true;
+
+                }else{
+                  this.tempProduct=Object.assign({},item);
+                  this.isNew=false;
+
+                }
                 $("#productModal").modal('show');
 
             },
-            updateProduct(){
+            opendelModal(item){
+              
+               this.tempProduct=Object.assign({},item);
+               $("#delProductModal").modal('show');
 
-                    const api=`${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/products`;
-                       const vm= this;
-                       this.$http.post(api,{data:vm.tempProduct}).then((response) =>{
+            },
+            delProduct(){
+               const vm= this;
+               let api=`${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/product/${vm.tempProduct.id}`;
+               let httpMethod ='delete';
+               
+               this.$http[httpMethod](api).then((response) =>{
 
                             console.log(response.data);
                            
-                            //    if(response.data.success){
-                            //         vm.products=response.data.products;
-                            //    }
+                               if(response.data.success){
+                                  
+                                   $("#delProductModal").modal('hide');
+                                  vm.getProducts();
+                               }else{
+
+                                  $("#delProductModal").modal('hide');
+                                  vm.getProducts();
+                                  console.log("新增失敗");
+                               }
+
+                    });
+
+            },
+            uploadFile(){
+
+              console.log(this);
+              const uploadedFile =this.$refs.files.files[0];
+              const vm= this;
+              const formData= new FormData();
+            },
+            updateProduct(){
+
+                       let api=`${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/product`;
+                       let httpMethod ='post';
+                       const vm= this;
+                       if(!vm.isNew){
+                        
+                         api=`${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/product/${vm.tempProduct.id}`;
+                         httpMethod='put';
+                      }
+                       this.$http[httpMethod](api,{data:vm.tempProduct}).then((response) =>{
+
+                            console.log(response.data);
+                           
+                               if(response.data.success){
+                                    // vm.products=response.data.products;
+                                   $("#productModal").modal('hide');
+                                  vm.getProducts();
+                               }else{
+
+                                  $("#productModal").modal('hide');
+                                  vm.getProducts();
+                                  console.log("新增失敗");
+                               }
 
                     });
 
