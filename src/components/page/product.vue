@@ -1,5 +1,8 @@
 <template>
     <div>
+       <loading :active.sync="isLoading">
+        </loading>
+
         <div class="text-right mt-4">
             <button class="btn btn-primary" @click="openModal(true)" >建立新的產品</button>
         </div> 
@@ -179,6 +182,7 @@ export default {
                 products:[],
                 tempProduct:{},
                 isNew: false,
+                isLoading: false,
 
             }
         },
@@ -187,10 +191,11 @@ export default {
 
                        const api=`${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/products`;
                        const vm= this;
+                       vm.isLoading=true;
                        this.$http.get(api).then((response) =>{
 
                             console.log(response.data);
-                           
+                            vm.isLoading=false;
                                if(response.data.success){
                                     vm.products=response.data.products;
                                }
@@ -248,6 +253,26 @@ export default {
               const uploadedFile =this.$refs.files.files[0];
               const vm= this;
               const formData= new FormData();
+              formData.append('file-to-upload',uploadedFile);
+              const url= `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/upload`;
+              this.$http.post(url,formData,{
+
+                headers:{
+
+                  'Content-type': 'multipart/form-data',
+
+                },
+
+              }).then((response)=>{
+
+                console.log(response.data);
+                if(response.data.success){
+
+                 // vm.tempProduct.imageUrl=response.data.imageUrl;
+                  vm.$set(vm.tempProduct,'imageUrl',response.data.imageUrl);
+                }
+              });
+
             },
             updateProduct(){
 
