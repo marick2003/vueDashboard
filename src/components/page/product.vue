@@ -23,11 +23,11 @@
                     <td>{{item.category}}</td>
                     <td>{{item.title}}</td>
                     <td class="text-right">
-                        {{item.origin_price}}
+                        {{item.origin_price | currency}}
                     </td>
                     <td class="text-right">
                        
-                        {{item.price}}
+                        {{item.price | currency}}
 
                     </td>
                     <td>
@@ -45,6 +45,28 @@
                 </tr>
             </tbody>
         </table>
+      <!-- pagination -->
+      <pagination :page_pagination.sync="pagination" v-on:pageproduct="getProducts"></pagination>
+      <!-- <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <li class="page-item" :class="{'disabled' : !pagination.has_pre}">
+            <a class="page-link" href="#" aria-label="Previous" @click.prevent="getProducts(pagination.current_page-1)">
+              <span aria-hidden="true">&laquo;</span>
+              <span class="sr-only">Previous</span>
+            </a>
+          </li>
+          <li class="page-item" v-for="page in pagination.total_pages" :key="page" :class="{'active' : pagination.current_page===page}">
+            <a class="page-link" href="#" @click.prevent="getProducts(page)">{{page}}</a>
+          </li>
+          <li class="page-item" :class="{'disabled' : !pagination.has_next}">
+            <a class="page-link" href="#" aria-label="Next" @click.prevent="getProducts(pagination.current_page+1)"> 
+              <span aria-hidden="true">&raquo;</span>
+              <span class="sr-only">Next</span>
+            </a>
+          </li>
+        </ul>
+      </nav> -->
+
         <!-- Modal -->
 <div class="modal fade" id="productModal" tabindex="-1" role="dialog"
   aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -68,7 +90,7 @@
             </div>
             <div class="form-group">
               <label for="customFile">或 上傳圖片
-                <i class="fas fa-spinner fa-spin"></i>
+                <i class="fas fa-spinner fa-spin" v-if="status.fileUploading"></i>
               </label>
               <input type="file" id="customFile" class="form-control"
                 ref="files" @change="uploadFile">
@@ -175,29 +197,47 @@
 </template>
 <script>
 // import $ from 'jquery'
+import pagination from './pagination';
 export default {
+                  
+       
         data(){
 
             return{
                 products:[],
+                pagination: {},
                 tempProduct:{},
                 isNew: false,
                 isLoading: false,
+                status: {
+                  
+                  fileUploading: false,
+                }
 
             }
         },
-        methods:{
-            getProducts(){
+        components:{
 
-                       const api=`${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/products`;
+          pagination,
+
+        },
+        methods:{
+            getProducts(page=1){
+
+                       const api=`${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/products?page=${page}`;
                        const vm= this;
                        vm.isLoading=true;
+                       vm.status.fileUploading=true;
                        this.$http.get(api).then((response) =>{
 
                             console.log(response.data);
-                            vm.isLoading=false;
+                           
+                            vm.status.fileUploading=false;
+                            
                                if(response.data.success){
+                                    vm.isLoading=false;
                                     vm.products=response.data.products;
+                                    vm.pagination=response.data.pagination;
                                }
 
                     });
@@ -297,17 +337,22 @@ export default {
                                   $("#productModal").modal('hide');
                                   vm.getProducts();
                                   console.log("新增失敗");
+                                   this.$bus.$emit('messsage:push',response.data.message,'danger');
                                }
 
                     });
 
+            },test(){
+
+              alert("test");
             }
 
         },
         created(){
 
             this.getProducts();
-
+            ////
+           
         }
 }
 </script>

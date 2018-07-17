@@ -8,11 +8,12 @@ import 'vue-loading-overlay/dist/vue-loading.min.css'
 import 'bootstrap'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
- 
+import './bus'
+import currencyFilter from './filter/currency'
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
-
+Vue.filter('currency',currencyFilter);
 
 ///全域元件
 Vue.component('loading',Loading);
