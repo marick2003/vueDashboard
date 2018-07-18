@@ -4,6 +4,7 @@ import Router from 'vue-router'
 import Dashboard from '@/components/dashboard'
 import Login from '@/components/page/login';
 import Product from '@/components/page/product';
+import OderList from '@/components/page/oderList';
 
 
 Vue.use(Router)
@@ -43,6 +44,15 @@ export default new Router({
           meta:{
             requiresAuth: true,
           }
+        },
+        {
+          path: 'oderlist',
+          name: 'OderList',
+          component:OderList,
+          meta:{
+            requiresAuth: true,
+          }
+
         }
       ]
     },
