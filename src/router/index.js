@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+// import HelloWorld from '@/components/HelloWorld'
 import Dashboard from '@/components/dashboard'
 import Login from '@/components/page/login';
 import Product from '@/components/page/product';
+import OderList from '@/components/page/oderList';
 
 
 Vue.use(Router)
@@ -14,14 +15,14 @@ export default new Router({
       path: '*',
       redirect: 'login'
     },
-    {
-      path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld,
-      meta:{
-        requiresAuth: true,
-      }
-    },
+    // {
+    //   path: '/',
+    //   name: 'HelloWorld',
+    //   component: HelloWorld,
+    //   meta:{
+    //     requiresAuth: true,
+    //   }
+    // },
     { 
       path: '/login',
       name: 'Login',
@@ -30,7 +31,7 @@ export default new Router({
     },
     {
       path: '/admin',
-      name: 'HelloWorld',
+      name: 'Dashboard',
       component: Dashboard,
       meta:{
         requiresAuth: true,
@@ -43,8 +44,19 @@ export default new Router({
           meta:{
             requiresAuth: true,
           }
+        },
+        {
+          path: 'oderlist',
+          name: 'OderList',
+          component:OderList,
+          meta:{
+            requiresAuth: true,
+          }
+
         }
       ]
     },
-  ]
+  ],
+  linkActiveClass: "active",
+  linkExactActiveClass: "exact-active",
 })

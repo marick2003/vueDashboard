@@ -3,13 +3,21 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-
+import Loading from 'vue-loading-overlay'
+import 'vue-loading-overlay/dist/vue-loading.min.css'
+import 'bootstrap'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
- 
+import './bus'
+import currencyFilter from './filter/currency'
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
+Vue.filter('currency',currencyFilter);
+
+///全域元件
+Vue.component('loading',Loading);
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
