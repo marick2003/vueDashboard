@@ -14,9 +14,20 @@
 </template>
 <script>
 export default {
-
-
-}
+  name: 'Navbar',
+  methods: {
+    signout() {
+      const vm = this;
+      const url = `${process.env.APIPATH}/logout`;
+      this.$http.post(url).then((response) => {
+        console.log(response.data);
+        if (response.data.success) {
+          vm.$router.push('/signin');
+        }
+      });
+    },
+  },
+};
 </script>
 <style scoped>
 
