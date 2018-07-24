@@ -45,7 +45,10 @@
               <li class="nav-item">
                 <a class="nav-link" href="#">
                   <span data-feather="file-text"></span>
+                  <router-link to="../customer_oder" class="nav-link">
                  模擬訂單
+                 </router-link>
+                 
                 </a>
               </li>
 

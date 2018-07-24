@@ -5,6 +5,7 @@ import Dashboard from '@/components/dashboard'
 import Login from '@/components/page/login';
 import Product from '@/components/page/product';
 import OderList from '@/components/page/oderList';
+import CustomerOder from '@/components/page/CustomerOder';
 
 
 Vue.use(Router)
@@ -56,6 +57,22 @@ export default new Router({
         }
       ]
     },
+    {
+      path: '/',
+      name: 'Dashboard',
+      component: Dashboard,
+      children:[
+        {
+          path: 'customer_oder',
+          name: 'CustomerOder',
+          component:CustomerOder,
+          meta:{
+             requiresAuth: true,
+          }
+        }
+      ]
+
+    }
   ],
   linkActiveClass: "active",
   linkExactActiveClass: "exact-active",
