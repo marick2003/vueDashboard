@@ -23,7 +23,7 @@
                         <i class="fas fa-spinner fa-spin"  v-if="item.id === status.loadingItem"></i>
                         查看更多
                     </button>
-                    <button type="button" class="btn btn-outline-danger btn-sm ml-auto">
+                    <button type="button" class="btn btn-outline-danger btn-sm ml-auto" @click="addtoCart(item.id,1)">
                         <i class="fas fa-spinner fa-spin" v-if="item.id === status.loadingItem"></i>
                         加到購物車
                     </button>
@@ -73,6 +73,50 @@
                 </div>
             </div>
         </div>
+          <table class="table">
+            <thead>
+                <th></th>
+                <th>品名</th>
+                <th>數量</th>
+                <th>單價</th>
+            </thead>
+            <tbody>
+               
+                <tr v-for="(item, index) in cart.carts" :key="index">
+                <td class="align-middle">
+                    <button type="button" class="btn btn-outline-danger btn-sm" @click="removeCart(item.id)">
+                    <i class="far fa-trash-alt"></i>
+                    </button>
+                </td>
+                <td class="align-middle">
+                    {{ item.product.title }}
+                    <!-- <div class="text-success" v-if="item.coupon">
+                    已套用優惠券
+                    </div> -->
+                </td>
+                <td class="align-middle">{{ item.qty }}/{{ item.product.unit }}</td>
+                <td class="align-middle text-right">{{ item.final_total }}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                <td colspan="3" class="text-right">總計</td>
+                <td class="text-right">{{ cart.total }}</td>
+                </tr>
+                <tr v-if="cart.final_total !==cart.total">
+                    <td colspan="3" class="text-right text-success">折扣價</td>
+                    <td class="text-right text-success">{{ cart.final_total }}</td>
+                </tr>
+            </tfoot>
+            </table>
+            <div class="input-group mb-3 input-group-sm">
+            <input type="text" class="form-control" v-model="coupon_code"  placeholder="請輸入優惠碼">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button">
+                套用優惠碼
+                </button>
+            </div>
+            </div>
     </div>
 </template>
 <script>
@@ -82,11 +126,15 @@ export default {
     return {
       products: [],
       product: [],
+      cart:{
+
+      },
       status: {
         
         loadingItem: ''
 
       },
+      coupon_code: '',
       isLoading: false,
     };
   },
@@ -103,7 +151,7 @@ export default {
     },
     getProduct(id){
          const vm = this;
-          const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/product/${id}`;
+         const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/product/${id}`;
          vm.status.loadingItem = id;
          this.$http.get(url).then((response) => {
         vm.product = response.data.product;
@@ -111,15 +159,66 @@ export default {
         vm.status.loadingItem='';
         $("#productModal").modal('show');
          //vm.isLoading = false;
-         
-
-
+        
       });
 
+    },
+    addtoCart(id,qty=1){
+         const vm = this;
+         const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart`;
+         vm.status.loadingItem = id;
+         const cart={
+             product_id: id,
+             qty
+
+         }
+         this.$http.post(url,{data:cart}).then((response) => {
+         //vm.product = response.data.product;
+         console.log(response);
+         vm.status.loadingItem='';
+         vm.getCart();
+         $("#productModal").modal('hide');
+         //vm.isLoading = false;
+        
+      });
+
+    },
+    getCart(){
+         const vm = this;
+         const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart`;
+         vm.isLoading = true;
+   
+         this.$http.get(url).then((response) => {
+         //vm.product = response.data.product;
+         vm.cart=response.data.data;
+         console.log(response);
+         vm.isLoading = false;
+        
+      });
+
+    },
+    removeCart(id){
+
+         const vm = this;
+         const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart/${id}`;
+         vm.isLoading = true;
+   
+         this.$http.delete(url).then((response) => {
+         //vm.product = response.data.product;
+         this.getCart();
+         vm.isLoading = false;
+        
+      });
+    },
+    addCouponCode(){
+
+
+        
     }
   },
   created() {
     this.getProducts();
+    this.getCart();
   },
 };
 </script>
