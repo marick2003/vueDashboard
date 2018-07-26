@@ -90,9 +90,9 @@
                 </td>
                 <td class="align-middle">
                     {{ item.product.title }}
-                    <!-- <div class="text-success" v-if="item.coupon">
+                    <div class="text-success" v-if="item.coupon">
                     已套用優惠券
-                    </div> -->
+                    </div>
                 </td>
                 <td class="align-middle">{{ item.qty }}/{{ item.product.unit }}</td>
                 <td class="align-middle text-right">{{ item.final_total }}</td>
@@ -112,11 +112,49 @@
             <div class="input-group mb-3 input-group-sm">
             <input type="text" class="form-control" v-model="coupon_code"  placeholder="請輸入優惠碼">
             <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button">
+                <button class="btn btn-outline-secondary" type="button" @click="addCouponCode">
                 套用優惠碼
                 </button>
             </div>
             </div>
+            <div class="my-5 row justify-content-center">
+                <form class="col-md-6">
+                    <div class="form-group">
+                    <label for="useremail">Email</label>
+                    <input type="email" class="form-control" name="email" id="useremail"
+                        v-model="form.user.email" placeholder="請輸入 Email" required>
+                    <span class="text-danger"></span>
+                    </div>
+                
+                    <div class="form-group">
+                    <label for="username">收件人姓名</label>
+                    <input type="text" class="form-control" name="name" id="username"
+                        v-model="form.user.name" placeholder="輸入姓名">
+                    <span class="text-danger"></span>
+                    </div>
+                
+                    <div class="form-group">
+                    <label for="usertel">收件人電話</label>
+                    <input type="tel" class="form-control" id="usertel" v-model="form.user.tel" placeholder="請輸入電話">
+                    </div>
+                
+                    <div class="form-group">
+                    <label for="useraddress">收件人地址</label>
+                    <input type="address" class="form-control" name="address" id="useraddress" v-model="form.user.address"
+                        placeholder="請輸入地址">
+                    <span class="text-danger">地址欄位不得留空</span>
+                    </div>
+                
+                    <div class="form-group">
+                    <label for="useraddress">留言</label>
+                    <textarea name="" id="" class="form-control" cols="30" rows="10" v-model="form.message"></textarea>
+                    </div>
+                    <div class="text-right">
+                    <button class="btn btn-danger">送出訂單</button>
+                    </div>
+                </form>
+            </div>
+
     </div>
 </template>
 <script>
@@ -133,6 +171,14 @@ export default {
         
         loadingItem: ''
 
+      },
+      form:{ 
+          user:{
+            name: '',
+            email: '',
+            tel: '',
+            address: '',
+          }
       },
       coupon_code: '',
       isLoading: false,
@@ -212,8 +258,38 @@ export default {
     },
     addCouponCode(){
 
+         const vm = this;
+         const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/coupon`;
+         vm.isLoading = true;
 
+         this.$http.post(url,{data:{code:this.coupon_code}}).then((response) => {
+
+         console.log(response);
+         
+         //vm.product = response.data.product;
+         this.getCart();
+         vm.isLoading = false;
         
+      });
+
+
+    },
+    createOrder(){
+
+         const vm = this;
+         const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/order`;
+         vm.isLoading = true;
+
+         this.$http.post(url,{data:{code:this.coupon_code}}).then((response) => {
+
+         console.log(response);
+         
+         //vm.product = response.data.product;
+         this.getCart();
+         vm.isLoading = false;
+        
+      });
+
     }
   },
   created() {

@@ -26,10 +26,14 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">
+                <!-- <a class="nav-link" href="#">
                   <span data-feather="shopping-cart"></span>
                   優惠卷
-                </a>
+                  
+                </a> -->
+                <router-link to="/admin/couponList" class="nav-link">
+                 優惠卷
+                 </router-link>
               </li>
              
           

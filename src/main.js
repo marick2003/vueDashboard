@@ -10,10 +10,13 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import './bus'
 import currencyFilter from './filter/currency'
-
+// import VeeValidate from 'vee-validate';
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
 Vue.filter('currency',currencyFilter);
+
+
+//  Vue.use(VeeValidate);
 
 ///全域元件
 Vue.component('loading',Loading);

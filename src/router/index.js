@@ -6,6 +6,7 @@ import Login from '@/components/page/login';
 import Product from '@/components/page/product';
 import OderList from '@/components/page/oderList';
 import CustomerOder from '@/components/page/CustomerOder';
+import couponList from '@/components/page/couponList';
 
 
 Vue.use(Router)
@@ -50,6 +51,15 @@ export default new Router({
           path: 'oderlist',
           name: 'OderList',
           component:OderList,
+          meta:{
+            requiresAuth: true,
+          }
+
+        },
+        {
+          path: 'couponList',
+          name: 'CouponList',
+          component:couponList,
           meta:{
             requiresAuth: true,
           }
