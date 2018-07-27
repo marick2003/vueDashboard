@@ -282,12 +282,18 @@ export default {
          const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/order`;
          vm.isLoading = true;
          const order= vm.form;
+         this.$validator.validate().then(result=>{
+             if(!result){
+
+
+             }
+         });
 
          this.$http.post(url,order).then((response) => {
 
-         console.log(response);
+         console.log('訂單已成立',response);
          //vm.product = response.data.product;
-         this.getCart();
+        
          vm.isLoading = false;
         
       });
