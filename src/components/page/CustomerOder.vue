@@ -280,25 +280,29 @@ export default {
 
          const vm = this;
          const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/order`;
-         vm.isLoading = true;
+        
          const order= vm.form;
+         vm.isLoading = true;
          this.$validator.validate().then(result=>{
-             if(!result){
+        if(result){
 
 
-             }
-         });
 
-         this.$http.post(url,order).then((response) => {
+           this.$http.post(url,order).then((response) => {
 
-         console.log('訂單已成立',response);
-         //vm.product = response.data.product;
+               console.log('訂單已成立',response);
+               //vm.product = response.data.product;
+                vm.isLoading = false;
         
-         vm.isLoading = false;
-        
-      });
+            });
 
+            }else{
+
+                console.log('訂單不成立');
+            }
+       });
     }
+    
   },
   created() {
     this.getProducts();
