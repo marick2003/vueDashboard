@@ -282,23 +282,25 @@ export default {
          const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/order`;
         
          const order= vm.form;
-         vm.isLoading = true;
+        // vm.isLoading = true;
          this.$validator.validate().then(result=>{
         if(result){
 
-
-
-           this.$http.post(url,order).then((response) => {
+           this.$http.post(url,{data:order}).then((response) => {
 
                console.log('訂單已成立',response);
                //vm.product = response.data.product;
-                vm.isLoading = false;
+               // vm.isLoading = false;
+               if(response.data.success){
+
+                   vm.$router.push(`/customerCheckout/${response.data.orderId}`);
+               }
         
             });
 
             }else{
 
-                console.log('訂單不成立');
+                console.log('訂單不完整');
             }
        });
     }

@@ -7,6 +7,7 @@ import Product from '@/components/page/product';
 import OderList from '@/components/page/oderList';
 import CustomerOder from '@/components/page/CustomerOder';
 import couponList from '@/components/page/couponList';
+import CustomerCheckout from '@/components/page/CustomerCheckout';
 
 
 Vue.use(Router)
@@ -79,6 +80,16 @@ export default new Router({
           meta:{
              requiresAuth: true,
           }
+        },
+        ,
+        {
+          path: 'customerCheckout/:orderId',
+          name: 'CustomerCheckout',
+          component:CustomerCheckout,
+          meta:{
+            requiresAuth: true,
+          }
+
         }
       ]
 

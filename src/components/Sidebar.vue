@@ -20,10 +20,13 @@
                  </router-link>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">
+                <!-- <a class="nav-link" href="#">
                   <span data-feather="file"></span>
                   訂單列表
-                </a>
+                </a> -->
+                 <router-link to="/admin/oderlist" class="nav-link">
+                      產品訂單列表
+                 </router-link>
               </li>
               <li class="nav-item">
                 <!-- <a class="nav-link" href="#">
