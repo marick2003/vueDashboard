@@ -57,7 +57,7 @@
       const vm = this;
       const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/orders?page=${currentPage}`;
       vm.isLoading = true;
-      this.$http.get(url, vm.tempProduct).then((response) => {
+      this.$http.get(url).then((response) => {
         vm.orders = response.data.orders;
         vm.pagination = response.data.pagination;
         vm.isLoading = false;
